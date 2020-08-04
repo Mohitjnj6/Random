@@ -12,7 +12,6 @@ public class LoginFromExcel {
 	public static void main(String[] args) throws InterruptedException 
 	{
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Samsung\\Downloads\\chromedriver.exe");
-		//System.setProperty("webdriver.chrome.driver", "C:\\Users\\Samsung\\Downloads\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		
 		driver.manage().window().maximize();
