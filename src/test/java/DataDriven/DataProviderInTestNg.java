@@ -1,5 +1,7 @@
 package DataDriven;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -7,57 +9,43 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
-import excelPractice.Xls_Reader;
+import Utility.TestUtil;
 
-public class DataDriven1 {
-
-	public static void main(String[] args) throws InterruptedException 
-	{
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Samsung\\Downloads\\chromedriver.exe");
-		WebDriver driver  = new ChromeDriver();
-		
-		driver.manage().window().maximize();
-		driver.manage().deleteAllCookies();
-		
-		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-		driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
-		
-		driver.get("https://register.rediff.com/register/register.php?FormName=user_details");
-		
-		
-		Xls_Reader reader = new Xls_Reader("C:\\Users\\Samsung\\Downloads\\rediffmail.xlsx");
-		String sheetname = "Sheet1";
-		int rowcnt = reader.getRowCount(sheetname);
-		System.out.println(rowcnt);
-		System.out.println(reader.getCellData(sheetname, 0, 2)); // to add a new Column
-		
-		reader.addColumn(sheetname, "Status");
-		
-		for(int rownmbr = 2; rownmbr<=rowcnt; rownmbr++)
+public class DataProviderInTestNg 
+{
+	WebDriver driver;
+	
+		@BeforeMethod
+		public void setUp()
 		{
-			String fullName = reader.getCellData(sheetname, 0, rownmbr);
-
-			String rediffid = reader.getCellData(sheetname, 1, rownmbr);
-
-			String password = reader.getCellData(sheetname, 2, rownmbr);
-
-			String rePassword = reader.getCellData(sheetname, 3, rownmbr);
-
-			String altEmail = reader.getCellData(sheetname, 4, rownmbr);
-
-			String mobile = reader.getCellData(sheetname, 5, rownmbr);
-
-			String days = reader.getCellData(sheetname, 6, rownmbr);
-
-			String months = reader.getCellData(sheetname, 7, rownmbr);
-
-			String years = reader.getCellData(sheetname, 8, rownmbr);
-
-			String countrys = reader.getCellData(sheetname, 9, rownmbr);
-
-			String captcha = reader.getCellData(sheetname, 10, rownmbr);
+			System.setProperty("webdriver.chrome.driver", "C:\\Users\\Samsung\\Downloads\\chromedriver.exe");
+			driver  = new ChromeDriver();
 			
+			driver.manage().window().maximize();
+			driver.manage().deleteAllCookies();
+			
+			driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+			driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+			
+			driver.get("https://register.rediff.com/register/register.php?FormName=user_details");	
+		}
+		
+		@DataProvider
+		public Iterator<Object[]> getTestData()
+		{
+		ArrayList<Object[]> testData = TestUtil.getDataFromExcel();
+		return testData.iterator();
+		}
+		
+		
+		@Test(dataProvider="getTestData")
+		public void abc(String fullName, String rediffid, String password, String rePassword, String altEmail, String mobile, String days, String months, String years, String countrys, String captcha)
+		{
 			driver.findElement(By.cssSelector("input[name^='name']")).clear();
 			driver.findElement(By.cssSelector("input[name^='name']")).sendKeys(fullName);
 
@@ -95,14 +83,15 @@ public class DataDriven1 {
 
 			driver.findElement(By.cssSelector("input[class='captcha']")).clear();
 			driver.findElement(By.cssSelector("input[class='captcha']")).sendKeys(captcha);
-			
-			reader.setCellData(sheetname, "Status", rownmbr, "Pass"); //to add status = pass in Excel.
-
-			
-			
-			
 		}
-
-	}
+	
+		
+		@AfterMethod
+		public void tearDown() throws InterruptedException
+		{
+			Thread.sleep(7000);
+			
+			driver.quit();
+		}
 
 }
