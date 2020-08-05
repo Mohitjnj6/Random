@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="RediffMail">
+  <test  name="Test">
+  
+  <parameter name= "url" value= "https://www.rediffmailpro.com/cgi-bin/login.cgi"/>
+   <parameter name= "username" value= "mohit@gmail.com"/>
+    <parameter name= "password" value= "rediffmail3215"/>
+  
+    <classes>
+      <class name="DataDriven.Parameterization"/>
+    </classes>
+    
+    
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
